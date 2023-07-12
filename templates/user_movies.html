@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User {{ user_id }}'s Movies - MovieWeb App</title>
+    <!-- Include any additional CSS files here -->
+</head>
+<body>
+    <h1>User {{ user_id }}'s Favorite Movies</h1>
+    <ul>
+        {% for movie in movies %}
+            <li>{{ movie.name }} ({{ movie.year }}), directed by {{ movie.director }} - Rating: {{ movie.rating }}</li>
+        {% endfor %}
+    </ul>
+    <a href="/users/">Back to users list</a>
+</body>
+</html>
