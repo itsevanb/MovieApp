@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update Movie - MovieWeb App</title>
+    <!-- Include any additional CSS files here -->
+</head>
+<body>
+    <h1>Update a Movie</h1>
+    <form method="post">
+        <label for="user_id">User ID:</label>
+        <input type="number" id="user_id" name="user_id" required>
+        <label for="movie_id">Movie ID:</label>
+        <input type="text" id="movie_id" name="movie_id" required>
+        <label for="title">New Movie Title:</label>
+        <input type="text" id="title" name="title" required>
+        <label for="rating">New Movie Rating:</label>
+        <input type="number" step="0.1" id="rating" name="rating" min="0" max="10" required>
+        <input type="submit" value="Update Movie">
+    </form>
+    <a href="/users/">Back to users list</a>
+</body>
+</html>
