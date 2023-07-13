@@ -36,18 +36,20 @@ def add_movie():
     """Handle the form for adding a new movie to a user's favorites. Pull data from the OMDB API."""
     if request.method == 'POST':
         user_id = int(request.form['user_id'])
-        title = request.form['title']
-        api_key = 'aic766c0'
-        url = f"http://qqq.omdbapi.com/?t={title}&apikey={api_key}&plot=full"
+        title = request.form['title'].strip()
+        api_key = 'a1c766c0'
+        url = f"http://www.omdbapi.com/?t={title}&apikey={api_key}&plot=full"
         response = requests.get(url)
         movie_data = response.json()
+        user_movies = data_manager.get_user_movies(user_id)
+        max_id = max([movie['id'] for movie in user_movies]) if user_movies else 0
         movie = {
-            'id': movie_data['imdbID'],
-            'name': movie_data['Title'],
-            'year': int(movie_data['Year']),
-            'rating': float(movie_data['imdbRating']),
-            'poster': movie_data['Poster'],
-            'plot': movie_data['Plot'],
+            'id': max_id + 1,
+            'title': movie_data.get('Title', 'Title not available'),
+            'year': int(movie_data.get('Year', 0)),
+            'rating': float(movie_data.get('imdbRating', 0.0)),
+            'poster': movie_data.get('Poster', 'Poster not available'),
+            'plot': movie_data.get('Plot', 'Plot not available')
         }
         data_manager.add_movie(user_id, movie)
         return redirect(url_for('user_movies', user_id=user_id))
@@ -58,11 +60,11 @@ def update_movie():
     """Handle the form for updating a movie in a user's favorites."""
     if request.method == 'POST':
         user_id = int(request.form['user_id'])
-        movie_id = request.form['movie_id']
+        movie_id = int(request.form['movie_id'])
         title = request.form['title']
         rating = float(request.form['rating'])
-        movie = {'id': movie_id, 'name': title, 'rating': rating}
-        data_manager.update_movie(user_id, movie)
+        updated_movie = {'id': movie_id, 'title': title, 'rating': rating}
+        data_manager.update_movie(user_id, movie_id, updated_movie)
         return redirect(url_for('user_movies', user_id=user_id))
     return render_template('update_movie.html')
 
@@ -72,7 +74,7 @@ def delete_movie():
     if request.method == 'POST':
         user_id = int(request.form['user_id'])
         movie_id = request.form['movie_id']
-        data_manager.delete_movie(user_id, movie_id)
+        print(data_manager.delete_movie(user_id, movie_id))
         return redirect(url_for('user_movies', user_id=user_id))
     return render_template('delete_movie.html')
 
