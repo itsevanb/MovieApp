@@ -136,7 +136,7 @@ def login():
         user = next((user for user in users if 'username' in user and user['username'] == username), None)
         if user and check_password_hash(user['password'], password):
             session['user_id'] = user['id']
-            return redirect(url_for('home'))
+            return redirect(url_for('profile', user_id=user['id']))
         else:
             return render_template('login.html', error_message='Incorrect username or password')
     return render_template('login.html')
@@ -152,7 +152,7 @@ def profile(user_id):
     """Display the profile page for a user."""
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    user = data_manager.get_user_by_id(user_id)
+    user = data_manager.get_user(user_id)
     if not user:
         return render_template('error.html', error_message='User not found')
     return render_template('profile.html', user=user)
@@ -166,11 +166,15 @@ def edit_profile(user_id):
         username = request.form['username']
         bio = request.form['bio']
         try:
-            data_manager.update_user(user_id, username, bio)
+            # Update the user's data in the data source.
+            user['username'] = username
+            user['bio'] = bio
+            data_manager.update_user(user_id, user)
             return redirect(url_for('profile', user_id=user_id))
         except Exception as e:
             return render_template('error.html', error_message=str(e))
     return render_template('edit_profile.html', user=user)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
