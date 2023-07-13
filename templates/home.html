@@ -2,12 +2,89 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1"> 
     <title>Home - MovieWeb App</title>
-    <!-- Include any additional CSS files here -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Google Fonts -->
+    <link href="https://cdn.pixabay.com/photo/2019/05/23/13/11/headphones-4223911_1280.jpg" rel="stylesheet">
+    <style>
+        /* CSS for full-screen background image */
+        body {
+            background: url('https://cdn.pixabay.com/photo/2019/05/23/13/11/headphones-4223911_1280.jpg') no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+        }
+
+        h1 {
+            font-family: 'Montserrat', sans-serif;
+            color: #4A7C59;
+        }
+
+        /* CSS for buttons */
+        .btn-custom {
+            background-color: #14213D;
+            border-color: #14213D;
+            color: white;
+            width: 200px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background-color: #4A7C59;
+            border-color: #4A7C59;
+        }
+
+        /* CSS for title */
+        h1 {
+            font-size: 3em;
+            margin-top: 20%;
+        }
+
+        /* CSS for navbar */
+        .navbar {
+            background-color: #14213D;
+        }
+
+        /* CSS for footer */
+        .footer {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #14213D;
+            color: white;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to MovieWeb App!</h1>
-    <p>This is the home page.</p>
-    <a href="/users/">See all users</a>
+    <!-- Bootstrap Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <a class="navbar-brand" href="#">The Movie Database</a>
+    </nav>
+    <!-- Bootstrap container -->
+    <div class="container text-center">
+        <!-- Bootstrap text-center class -->
+        <h1>Welcome to The Movie Database!</h1>
+        <div class="my-4">
+            <a href="/users/" class="btn btn-custom my-3">View all users</a><br>
+            <a href="/add_user" class="btn btn-custom my-3">Add a new user</a><br>
+            <a href="/add_movie" class="btn btn-custom my-3">Add a new movie</a><br>
+            <a href="/update_movie" class="btn btn-custom my-3">Update a movie</a><br>
+            <a href="/delete_movie" class="btn btn-custom my-3">Delete a movie</a>
+        </div>
+    </div>
+    <!-- Bootstrap footer -->
+    <div class="footer py-2">
+        <p>&copy; 2023 The Movie Database. All rights reserved.</p>
+    </div>
+    <!-- Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
