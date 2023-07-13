@@ -175,6 +175,10 @@ def edit_profile(user_id):
             return render_template('error.html', error_message=str(e))
     return render_template('edit_profile.html', user=user)
 
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return render_template('404.html'), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
