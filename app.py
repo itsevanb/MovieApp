@@ -11,8 +11,6 @@ app = Flask(__name__)
 app.secret_key = secret_key
 data_manager = JSONDataManager('movies.json')
 
-
-
 @app.route('/')
 def home():
     """Render the homepage of the application."""
@@ -34,7 +32,6 @@ def user_movies(user_id):
     movies = data_manager.get_user_movies(user_id)
     return render_template('user_movies.html', movies=movies)
 
-
 @app.route('/add_user', methods=['GET', 'POST'])
 def add_user():
     """Handle the form for adding a new user."""
@@ -49,7 +46,6 @@ def add_user():
             print(f"An error occurred while adding a new user: {str(e)}")
             return render_template('error.html', error_message=str(e))
     return render_template('add_user.html')
-
 
 @app.route('/add_movie', methods=['GET', 'POST'])
 def add_movie():
@@ -80,7 +76,6 @@ def add_movie():
             return render_template('error.html', error_message=str(e))
     return render_template('add_movie.html')
 
-
 @app.route('/update_movie', methods=['GET', 'POST'])
 def update_movie():
     """Handle the form for updating a movie in a user's favorites."""
@@ -99,7 +94,6 @@ def update_movie():
             print(f"An error occurred while updating a movie: {str(e)}")
             return render_template('error.html', error_message=str(e))
     return render_template('update_movie.html')
-
 
 @app.route('/delete_movie', methods=['GET', 'POST'])
 def delete_movie():
@@ -152,6 +146,31 @@ def logout():
     """Handle the form for logging out a user."""
     session.pop('user_id', None)
     return redirect(url_for('home'))
+
+@app.route('/profile/<int:user_id>')
+def profile(user_id):
+    """Display the profile page for a user."""
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    user = data_manager.get_user_by_id(user_id)
+    if not user:
+        return render_template('error.html', error_message='User not found')
+    return render_template('profile.html', user=user)
+
+@app.route('/edit_profile/<int:user_id>', methods=['GET', 'POST'])
+def edit_profile(user_id):
+    user = data_manager.get_user(user_id)
+    if not user:
+        return render_template('error.html', error_message='User not found')
+    if request.method == 'POST':
+        username = request.form['username']
+        bio = request.form['bio']
+        try:
+            data_manager.update_user(user_id, username, bio)
+            return redirect(url_for('profile', user_id=user_id))
+        except Exception as e:
+            return render_template('error.html', error_message=str(e))
+    return render_template('edit_profile.html', user=user)
 
 if __name__ == '__main__':
     app.run(debug=True)
