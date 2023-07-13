@@ -53,7 +53,7 @@ def add_movie():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     if request.method == 'POST':
-        user_id = int(request.form['user_id'])
+        user_id = session['user_id']
         title = request.form['title'].strip()
         api_key = 'a1c766c0'
         url = f"http://www.omdbapi.com/?t={title}&apikey={api_key}&plot=full"
@@ -82,7 +82,7 @@ def update_movie():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     if request.method == 'POST':
-        user_id = int(request.form['user_id'])
+        user_id = session['user_id']
         movie_id = int(request.form['movie_id'])
         title = request.form['title']
         rating = float(request.form['rating'])
@@ -101,7 +101,7 @@ def delete_movie():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     if request.method == 'POST':
-        user_id = int(request.form['user_id'])
+        user_id = session['user_id']
         movie_id = request.form['movie_id']
         try:
             data_manager.delete_movie(user_id, movie_id)
