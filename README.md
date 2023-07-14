@@ -1,40 +1,52 @@
-# Movie Web App
+# MovieWeb App
 
-## Overview
+MovieWeb App is a Python-based web application built using the Flask micro web framework. The app allows users to manage their favorite movies. Users can add, update, delete, and view movies. User authentication is also supported with features like registration, login, and logout.
 
-This web application allows users to manage a list of their favorite movies. It's built using Flask for the backend, with Jinja2 for templating, and HTML, CSS, and potentially JavaScript for the frontend. Data is managed through a custom Python class and stored persistently in a JSON file.
+## Key Features
 
-## Core Functionalities
+- **User Registration:** New users can register by providing a username and password.
+- **User Authentication:** Users can log in and log out of the application. User credentials are verified during login.
+- **Profile Management:** Users can view and edit their profile information.
+- **Movie Management:** Users can add their favorite movies to their profile. Each movie is fetched from the OMDB API using the movie's title. Users can also update and delete movies from their list.
 
-1. **User Selection**: Users can select their profile to view and manage their favorite movies list.
+## Code Structure
 
-2. **Movie Management**: After a user is selected, the app will display a list of their favorite movies. From this list, users are able to perform the following operations:
-    - Add a new movie to their list
-    - Delete a movie from their list
-    - Update the details of a movie in their list
-    - List all movies in their list
-    
+The application's codebase is divided into two main parts:
 
-## Installation and Setup
+- **Flask Application (`app.py`):** This is the main entry point of our application. It contains all the routes and views for our app.
+- **JSON Data Manager (`json_data_manager.py`):** This is our custom data manager that handles all data operations. It reads from and writes to a JSON file, simulating a database.
 
-(We'll add instructions for setting up the application environment and running the app here.)
+## Technologies Used
 
-## Usage
+- **Python:** The back-end logic is written in Python.
+- **Flask:** Flask is a micro web framework written in Python. It doesn't require particular tools or libraries, allowing you to choose the libraries you want to use.
+- **OMDb API:** The Open Movie Database (OMDb) API is a free web service to obtain movie information. We use it to fetch movie details when a user adds a new movie.
+- **JSON:** JSON files are used to simulate a database in this application.
+- **HTML/CSS:** HTML is used to structure the web content and CSS is used for styling.
 
-(We'll add instructions for how to use the app here.)
+## How to Run the Application
 
-## Project Structure
+1. Clone the repository to your local machine.
+2. Install the required Python packages using pip: `pip install -r requirements.txt`.
+3. Set the environment variable `SECRET_KEY` to a secret key of your choice.
+4. Run the application using the command: `python app.py`.
 
-(We'll add a description of the project structure and main files here.)
+Please note that the OMDB API requires an API key, which is set to 'a1c766c0' in the `app.py` file. If you want to use your own API key, you will need to replace this value.
 
 ## Testing
 
-(We'll add instructions for how to run any tests we create here.)
+We recommend both unit tests and manual testing to ensure all functionalities are working as expected. 
+
+*Please note that this is a basic application and does not cover all potential edge cases. For instance, there is no handling of simultaneous updates from different users. This is a learning project and should not be used as is in a production environment.*
+
+## Future Improvements
+
+- Implement a real database instead of using JSON files to store data.
+- Add more robust error handling and input validation.
+- Implement more features like sorting and filtering movies, adding movies to watchlist, user ratings and reviews, etc.
+
+Contributions are welcome! Please make a pull request.
 
 ## License
 
-(We'll add any license information here.)
-
-## Authors
-
-(We'll add your name and any other contributors here.)
+This project is open source, under the [MIT License](https://choosealicense.com/licenses/mit/).
