@@ -4,12 +4,13 @@ import requests
 from werkzeug.security import check_password_hash
 import os
 
-"""Generate a Secret Key for the session."""
-secret_key = os.urandom(24).hex()
-
 app = Flask(__name__)
-app.secret_key = secret_key
+app.secret_key = os.environ.get('SECRET_KEY')
 data_manager = JSONDataManager('movies.json')
+
+"""Raise Runtime Error if SECRET_KEY is not set."""
+if app.secret_key is None:
+    raise RuntimeError("SECRET_KEY not set! Set the environment variable SECRET_KEY before starting the app.")
 
 @app.route('/')
 def home():
@@ -29,8 +30,11 @@ def users_list():
 @app.route('/users/<int:user_id>')
 def user_movies(user_id):
     """Display a list of a specific user's favorite movies."""
+    if user_id is None:
+        return redirect(url_for('login'))
+    user = data_manager.get_user(user_id)
     movies = data_manager.get_user_movies(user_id)
-    return render_template('user_movies.html', movies=movies)
+    return render_template('user_movies.html', movies=movies, user=user)
 
 @app.route('/add_user', methods=['GET', 'POST'])
 def add_user():
@@ -76,40 +80,43 @@ def add_movie():
             return render_template('error.html', error_message=str(e))
     return render_template('add_movie.html')
 
-@app.route('/update_movie', methods=['GET', 'POST'])
-def update_movie():
+@app.route('/update_movie/<int:movie_id>', methods=['GET', 'POST'])
+def update_movie(movie_id):
     """Handle the form for updating a movie in a user's favorites."""
     if 'user_id' not in session:
         return redirect(url_for('login'))
+
+    user_id = session['user_id']
+    movie = data_manager.get_movie(user_id, movie_id)
+    if movie is None:
+        return render_template('error.html', error_message="Movie not found")
+
     if request.method == 'POST':
-        user_id = session['user_id']
-        movie_id = int(request.form['movie_id'])
         title = request.form['title']
         rating = float(request.form['rating'])
-        updated_movie = {'id': movie_id, 'name': title, 'rating': rating}
+        updated_movie = {'id': movie_id, 'title': title, 'rating': rating}
         try:
             data_manager.update_movie(user_id, movie_id, updated_movie)
             return redirect(url_for('user_movies', user_id=user_id))
         except Exception as e:
             print(f"An error occurred while updating a movie: {str(e)}")
             return render_template('error.html', error_message=str(e))
-    return render_template('update_movie.html')
+    else:
+        return render_template('update_movie.html', movie=movie)
 
-@app.route('/delete_movie', methods=['GET', 'POST'])
-def delete_movie():
+
+@app.route('/delete_movie/<int:movie_id>', methods=['POST'])
+def delete_movie(movie_id):
     """Handle the form for deleting a movie from a user's favorites."""
     if 'user_id' not in session:
         return redirect(url_for('login'))
-    if request.method == 'POST':
-        user_id = session['user_id']
-        movie_id = request.form['movie_id']
-        try:
-            data_manager.delete_movie(user_id, movie_id)
-            return redirect(url_for('user_movies', user_id=user_id))
-        except Exception as e:
-            print(f"An error occurred while deleting a movie: {str(e)}")
-            return render_template('error.html', error_message=str(e))
-    return render_template('delete_movie.html')
+    user_id = session['user_id']
+    try:
+        data_manager.delete_movie(user_id, movie_id)
+        return redirect(url_for('profile', user_id=user_id))
+    except Exception as e:
+        print(f"An error occurred while deleting a movie: {str(e)}")
+        return render_template('error.html', error_message=str(e))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
@@ -150,18 +157,23 @@ def logout():
 @app.route('/profile/<int:user_id>')
 def profile(user_id):
     """Display the profile page for a user."""
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
+    if 'user_id' not in session or session['user_id'] != user_id:
+        return render_template('error.html', error_message='Unauthorized access')
     user = data_manager.get_user(user_id)
     if not user:
         return render_template('error.html', error_message='User not found')
-    return render_template('profile.html', user=user)
+    movies = data_manager.get_user_movies(user_id)
+    return render_template('profile.html', user=user, movies=movies, session=session)
 
 @app.route('/edit_profile/<int:user_id>', methods=['GET', 'POST'])
 def edit_profile(user_id):
+    if 'user_id' not in session or session['user_id'] != user_id:
+        return render_template('error.html', error_message='Unauthorized access')
+
     user = data_manager.get_user(user_id)
     if not user:
         return render_template('error.html', error_message='User not found')
+
     if request.method == 'POST':
         username = request.form['username']
         bio = request.form['bio']
@@ -173,7 +185,9 @@ def edit_profile(user_id):
             return redirect(url_for('profile', user_id=user_id))
         except Exception as e:
             return render_template('error.html', error_message=str(e))
-    return render_template('edit_profile.html', user=user)
+            
+    return render_template('edit_profile.html', user=user, session=session)
+
 
 @app.errorhandler(404)
 def page_not_found(e):

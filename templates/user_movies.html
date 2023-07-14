@@ -52,13 +52,14 @@
 </head>
 <body>
     <div class="container">
-        <h1>User {{ user_id }}'s Favorite Movies</h1>
+        <h1>{{ user.username }}'s Favorite Movies</h1>
         <ul>
             {% for movie in movies %}
-                <li>{{ movie.name }} ({{ movie.year }}), directed by {{ movie.director }} - Rating: {{ movie.rating }}</li>
+                <li>{{ movie.title }} ({{ movie.year }}) - Rating: {{ movie.rating }}</li>
             {% endfor %}
         </ul>
         <a href="/users/" class="btn btn-custom">Back to users list</a>
+        <a href="{{ url_for('profile', user_id=session['user_id']) }}" class="btn btn-custom">Back to Profile</a>
     </div>
     <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>

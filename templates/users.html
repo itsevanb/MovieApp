@@ -60,7 +60,7 @@
                 </li>
             {% endfor %}
         </ul>
-        <a href="/" class="btn btn-custom">Home</a>
+        <a href="{{ url_for('profile', user_id=session['user_id']) }}" class="btn btn-custom">Back to Profile</a>
         <a href="/add_user" class="btn btn-custom">Add a new user</a>
     </div>
     <!-- Bootstrap JS -->
